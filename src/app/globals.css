@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Coffeetown Salvador — Warm Editorial Bistro
+   Design tokens (Tailwind v4 @theme → utilities: bg-ink, text-cream, ...)
+   ========================================================================== */
+@theme {
+  /* Brand palette — contida, 5 famílias */
+  --color-ink: #0c1014; /* fundo principal      */
+  --color-graphite: #202327; /* fundo secundário     */
+  --color-coffee: #513c25; /* marrom café          */
+  --color-caramel: #7d6130; /* acento premium       */
+  --color-copper: #be5719; /* acento principal     */
+  --color-latte: #ab7c58; /* neutro quente        */
+  --color-cream: #ebdac4; /* texto claro          */
+  --color-sand: #c6a78e; /* texto secundário     */
+
+  /* Tipografia (variáveis injetadas pelo next/font) */
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-manrope);
+
+  /* Easing editorial reutilizável */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Títulos usam o display serif com optical sizing */
+.font-display {
+  font-optical-sizing: auto;
+}
+
+::selection {
+  background: var(--color-copper);
+  color: var(--color-ink);
+}
+
+/* Foco visível consistente para navegação por teclado */
+:focus-visible {
+  outline: 2px solid var(--color-copper);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Respeito total a quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Marquee infinito das avaliações (corre para a esquerda, loop contínuo) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* -50% porque a lista é duplicada; loop perfeitamente contínuo */
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+/* Sem movimento automático: vira uma faixa rolável manualmente */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Grão/textura sutil para dar calor às superfícies escuras */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
